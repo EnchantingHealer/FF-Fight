@@ -1,0 +1,138 @@
+html {
+    height: 100vh;
+    width: 100vw;
+}
+
+#selectScreen {
+    display: flex;
+    background-image: linear-gradient(to bottom, rgb(79, 79, 177), rgb(2, 2, 107));
+    background-repeat: no-repeat;
+    width: 99vw;
+    height: 99vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+header {
+    color: white;
+}
+
+#selections {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+#selections #redThirteen {
+    height: 100px;
+    width: 100px;
+    border: 4px solid;
+}
+
+#selections #aerith {
+    height: 100px;
+    width: 100px;
+    border: 4px solid;
+}
+
+#selections #tifa {
+    height: 100px;
+    width: 100px;
+    border: 4px solid;
+}
+
+#selections #cloud {
+    height: 100px;
+    width: 100px;
+    border: 4px solid;
+}
+
+#continueButton {
+    display: flex;
+    padding-left:50px;
+    padding-right:50px;
+    padding-top:10px;
+    padding-bottom:10px;
+    background-color: rgba(235, 235, 12, 0.856);
+    border-radius: 50px;
+}
+a:visited{
+    text-decoration: none;
+}
+a:link{
+    text-decoration: none;
+}
+#abilities{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+#abilities button{
+    flex-grow:1;
+    height:20vh;
+    width:40vw;
+}
+#battle{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#battle {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin:0px;
+}
+#battle-scene{
+    display: flex;
+    background-image: url(Earth.jpeg);
+    flex-direction: column;
+    background-position: center;
+    flex-grow:2;
+}
+#names{
+    display: flex;
+    flex-direction: row;
+    color:white;
+    justify-content: space-between;
+
+}
+#healthbars{
+    display: flex;
+    flex-direction: row;
+    color:white;
+    justify-content: space-between;
+}
+#spriteOne{
+    transform:scaleX(-1);
+}
+#sprites{
+    display: flex;
+    justify-content: space-between;
+}
+.sprite{
+    margin:70px;
+    width:100px;
+    height:100px;
+    object-fit: contain;
+}
+#game-text{
+    color:white;
+    text-align: center;
+}
+#animation{
+    width:250px;
+    height:250px;
+}
+.hidden{
+    display: none;
+}
+.visible{
+display: block;
+}

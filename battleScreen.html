@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FF-Fight</title>
+  <link href="https://fonts.googleapis.com/css?family=Karla|Lora" rel="stylesheet">
+  <link rel="stylesheet" href="styling.css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script defer src="characters.js"></script>
+  <script defer src="battle.js"></script>
+</head>
+
+<body id="battle" onload="onload()">
+  <div id=battle-scene>
+
+    <div id="names">
+      <h1 id="nameOne"></h1>
+      <h1 id="nameTwo"></h1>
+    </div>
+    <div id="healthbars">
+      <h1 id="healthbarOne"></h1>
+      <h1 id="healthbarTwo"></h1>
+    </div>
+    <div id="sprites">
+      <img src="aerithSprite.png" id="spriteOne" class="sprite">
+      <img src="Cloud.jpeg" class="hidden" id="animation">
+      <img src="tifaSprite.png" id="spriteTwo" class="sprite">
+    </div>
+    <div id="game-text" class="hidden">
+      <p>oh no , some kind of number and another thing happened ouchie wouchie , dookie wookie hits for some reason</p>
+    </div>
+    <div id="abilities">
+      <button id="physicalAttack" class="button">Attack</button>
+      <button id="specialAttack" class="button">Special</button>
+      <button id="defend" class="button">Defend</button>
+      <button id="heal" class="button"></button>
+        </div>
+  </div>
+
+
+</body>
+
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FF-Fight</title>
+  <link href="https://fonts.googleapis.com/css?family=Karla|Lora" rel="stylesheet">
+  <link rel="stylesheet" href="styling.css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script defer src="characters.js" ></script>
+  <script defer src="select.js" ></script>
+
+</head>
+
+<body id="selectScreen">
+  <header>
+    <h1>Select Your Character!</h1>
+  </header>
+  <div>
+    <h1 id="name">RedXIII</h1>
+  </div>
+  <div>
+    <img src="redSprite.png" id="preview" >
+    <!-- <h1>Stats</h1> -->
+  </div>
+  <div id="selections">
+    <img src="Red13.jpeg" id="redThirteen" onclick="onCharacterSelect(characters.red)">
+    <img src="Aerith.png" id="aerith" onclick="onCharacterSelect(characters.aerith)">
+    <img src="Tifa.jpeg" id="tifa" onclick="onCharacterSelect(characters.tifa)">
+    <img src="Cloud.jpeg" id="cloud" onclick="onCharacterSelect(characters.cloud)">
+  </div>
+  <div>
+    <a href="./battleScreen.html?name=red" id="continueButton">Continue</a>
+  </div>
+
+</body>
+
+</html>
