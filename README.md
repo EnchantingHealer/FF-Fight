@@ -10,11 +10,11 @@ First one to reach 0 health loses
 
 **Mobile Fight Layout**
 
-![mobile fight layout](./readme-resources/mobile-fight-layout.png)
+![mobile fight layout](./mobile-fight-layout.png)
 
 **Mobile Select Layout**
 
-![mobile selecgt layout](./readme-resources/Mobile-select-Layout.png)
+![mobile selecgt layout](./Mobile-select-Layout.png)
 
 
 Wireframes Wireframes showing your app's layout on desktop, tablet, and mobile. These can be as lo-fi or as hi-fi as you want. You can either to put these in the README or upload them to your repository.
