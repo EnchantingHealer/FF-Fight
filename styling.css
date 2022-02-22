@@ -7,11 +7,13 @@ html {
     display: flex;
     background-image: linear-gradient(to bottom, rgb(79, 79, 177), rgb(2, 2, 107));
     background-repeat: no-repeat;
-    width: 99vw;
-    height: 99vh;
+    width: 100vw;
+    height: 100vh;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    margin: 0px;
+    padding: 0px;
 }
 
 header {
@@ -27,59 +29,75 @@ header {
 }
 
 #selections #redThirteen {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     border: 4px solid;
 }
 
 #selections #aerith {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     border: 4px solid;
 }
 
 #selections #tifa {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     border: 4px solid;
 }
 
 #selections #cloud {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     border: 4px solid;
+}
+
+#preview {
+    margin: 10px;
+    margin-bottom: 30px;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
 }
 
 #continueButton {
     display: flex;
-    padding-left:50px;
-    padding-right:50px;
-    padding-top:10px;
-    padding-bottom:10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     background-color: rgba(235, 235, 12, 0.856);
     border-radius: 50px;
 }
-a:visited{
+
+a:visited {
     text-decoration: none;
 }
-a:link{
+
+a:link {
     text-decoration: none;
 }
-#abilities{
+
+#abilities {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
-#abilities button{
-    flex-grow:1;
-    height:20vh;
-    width:40vw;
+
+@media screen and (max-height:622px) {
+    #abilities button {
+        flex-grow: 1;
+        height: 14vh;
+        width: 40vw;
+    }
 }
-#battle{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+
+#abilities button {
+    flex-grow: 1;
+    height: 18vh;
+    width: 40vw;
 }
+
 #battle {
     display: flex;
     width: 100vw;
@@ -87,52 +105,235 @@ a:link{
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    margin:0px;
+    margin: 0px;
 }
-#battle-scene{
+
+#battle-scene {
     display: flex;
     background-image: url(Earth.jpeg);
     flex-direction: column;
     background-position: center;
-    flex-grow:2;
+    flex-grow: 2;
 }
-#names{
-    display: flex;
-    flex-direction: row;
-    color:white;
-    justify-content: space-between;
 
-}
-#healthbars{
+#names {
     display: flex;
     flex-direction: row;
-    color:white;
+    color: white;
     justify-content: space-between;
+    margin-left: 20px;
+    margin-right: 20px;
 }
-#spriteOne{
-    transform:scaleX(-1);
+
+#healthbars {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    justify-content: space-between;
+    margin-left: 20px;
+    margin-right: 20px;
 }
-#sprites{
+
+#spriteOne {
+    transform: scaleX(-1);
+}
+
+#sprites {
     display: flex;
     justify-content: space-between;
 }
-.sprite{
-    margin:70px;
-    width:100px;
-    height:100px;
+
+.sprite {
+    margin: 70px;
+    margin-bottom: 30px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
 }
-#game-text{
-    color:white;
+
+#game-text {
+    color: white;
     text-align: center;
+
 }
-#animation{
-    width:250px;
-    height:250px;
+
+.animation {
+    width: 250px;
+    height: 250px;
 }
-.hidden{
+
+.hidden {
     display: none;
 }
-.visible{
-display: block;
+
+.visible {
+    display: block;
+}
+
+.text {
+    height: 30px;
+}
+
+p {
+    margin: 4px;
+}
+
+/* media query start */
+@media screen and (max-width: 575px) {
+
+    /* character select screen */
+    #selections {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    #preview {
+        margin: 10px;
+        margin-bottom: 30px;
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+    }
+
+    #selections #redThirteen {
+        height: 100px;
+        width: 100px;
+        border: 4px solid;
+    }
+
+    #selections #aerith {
+        height: 100px;
+        width: 100px;
+        border: 4px solid;
+    }
+
+    #selections #tifa {
+        height: 100px;
+        width: 100px;
+        border: 4px solid;
+    }
+
+    #selections #cloud {
+        height: 100px;
+        width: 100px;
+        border: 4px solid;
+    }
+
+    #continueButton {
+        display: flex;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        background-color: rgba(235, 235, 12, 0.856);
+        border-radius: 50px;
+    }
+
+    a:visited {
+        text-decoration: none;
+    }
+
+    a:link {
+        text-decoration: none;
+    }
+
+
+
+    /*battle screen*/
+    #abilities button {
+        flex-grow: 1;
+        height: 20vh;
+        width: 40vw;
+    }
+
+    #game-text {
+        color: white;
+        text-align: center;
+
+    }
+
+    .animation {
+        width: 150px;
+        height: 150px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .visible {
+        display: block;
+    }
+
+    .text {
+        height: 30px;
+    }
+
+    p {
+        margin: 4px;
+    }
+
+    #battle-scene {
+        display: flex;
+        background-image: url(Earth.jpeg);
+        flex-direction: column;
+        background-position: center;
+        flex-grow: 2;
+        margin: 0px;
+        padding: 0px;
+        justify-content: space-between;
+    }
+
+    #battle {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0px;
+    }
+
+    #names {
+        display: flex;
+        flex-direction: row;
+        color: white;
+        justify-content: space-between;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    #healthbars {
+        display: flex;
+        flex-direction: row;
+        color: white;
+        justify-content: space-between;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    #spriteOne {
+        transform: scaleX(-1);
+    }
+
+    #sprites {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .sprite {
+        margin: 10px;
+        width: 75px;
+        height: 75px;
+        object-fit: contain;
+    }
+
+    #abilities {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
 }

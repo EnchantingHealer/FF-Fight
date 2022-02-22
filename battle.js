@@ -26,13 +26,14 @@ const playerSprite = document.getElementById("spriteOne");
 const playerHealth = document.getElementById("healthbarOne");
 const playerName = document.getElementById("nameOne");
 
-let enemy = characters.tifa;
+let enemy = undefined;
 const enemySprite = document.getElementById("spriteTwo")
 const enemyHealth = document.getElementById("healthbarTwo");
 const enemyName = document.getElementById("nameTwo");
 
 
 let isAttacking = false;
+const MAX_ANIMATION_DURATION_MS = 4000;
 
 onload = () => {
     // select player
@@ -82,8 +83,51 @@ renderPlayerControls = (character) => {
     special.innerHTML = `${character.special} x${character.specialCount}`;
 }
 
+heal.addEventListener('click', async () => {
+    disableAllButtons();
+    console.log("before player heal");
+    await healing(player);
+    console.log("after player heal");
+    if (player.healCount == 0) {
+        heal.disabled = true;
+    }
+    heal.innerHTML = `Heal x${player.healCount}`;
+    clearTimeout(cpuBrain);
+    setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
+});
+physical.addEventListener('click', async () => {
+
+    disableAllButtons();
+    console.log("before player physical");
+    await phAttack(player, enemy);
+    console.log("after player physical");
+    clearTimeout(cpuBrain);
+    setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
+});
+special.addEventListener('click', async () => {
+    disableAllButtons();
+    console.log("before player special");
+    await spAttack(player, enemy);
+    console.log("after player special");
+    if (player.specialCount == 0) {
+        special.disabled = true;
+    }
+    special.innerHTML = `${player.special} x${player.specialCount}`;
+    clearTimeout(cpuBrain);
+    setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
+});
+defend.addEventListener('click', async () => {
+    disableAllButtons();
+    console.log("before player def");
+    await defending(player);
+    console.log("after player def");
+    clearTimeout(cpuBrain);
+    setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
+});
+
 //phAttack(character) (deals flat damage)
 phAttack = async (character, opponent) => {
+    console.log("inside Phattack for ", character);
     if (!isAttacking) {
         isAttacking = true;
 
@@ -99,7 +143,9 @@ phAttack = async (character, opponent) => {
         opponent.elements.health.innerHTML = opponent.health;
 
         // get animation
+        console.log("before phattack axios call for ", character);
         const response = await axios.get(`https://g.tenor.com/v1/search?q=${character.physical}&key=J46MWLRVZYC3&limit=30`);
+        console.log("after phattack axios call for ", character);
         loadAnimation(response);
     }
 };
@@ -107,6 +153,7 @@ phAttack = async (character, opponent) => {
 
 //spAttack(character) (high number but usable once or twice)
 spAttack = async (character, opponent) => {
+    console.log("inside spAttack for ", character);
     if (!isAttacking) {
         if (character.specialCount == 0) {
             return;
@@ -118,9 +165,9 @@ spAttack = async (character, opponent) => {
         opponent.health = opponent.health - damage;
         gameText.innerHTML = `${character.name} uses ${character.special}, deals ${damage} damage!`;
         opponent.elements.health.innerHTML = opponent.health;
-
+        console.log("before spatk axios call for ", character);
         const response = await axios.get(`https://g.tenor.com/v1/search?q=${special.innerHTML}&key=J46MWLRVZYC3&limit=30`);
-        console.log(response);
+        console.log("after spatk axios call for ", character);
         loadAnimation(response);
         // decrement character heal count
         character.specialCount = character.specialCount - 1;
@@ -130,6 +177,7 @@ spAttack = async (character, opponent) => {
 };
 //heal(character)
 healing = async (character) => {
+    console.log("inside healing for ", character);
     // don't spam attacks, only attack if one is not in progress
     if (!isAttacking) {
         if (character.healCount == 0) {
@@ -146,72 +194,33 @@ healing = async (character) => {
         character.elements.health.innerHTML = character.health;
 
         // Load animation
+        console.log("before healing axios call for ", character);
         const response = await axios.get(`https://g.tenor.com/v1/search?q=heal&key=J46MWLRVZYC3&limit=30`);
-        console.log(response);
+        console.log("after healing axios call for ", character);
         loadAnimation(response);
+
         // decrement character heal count
         character.healCount = character.healCount - 1;
     }
 };
 //defend(character)
 defending = async (character) => {
+    console.log("inside def for ", character);
     //recieve 0.5x damage
     if (!isAttacking) {
         isAttacking = true;
 
         character.defenceMultiplier = 0.5;
         gameText.innerHTML = `${character.name} braces themselves for an attack , receives half the damage.`
-
+        console.log("before def axios call for ", character);
         const response = await axios.get(`https://g.tenor.com/v1/search?q=defend&key=J46MWLRVZYC3&limit=30`);
-        console.log(response);
+        console.log("after def axios call for ", character);
         loadAnimation(response);
     }
 };
 
-
-//loadAnimation(searchTerm) (it's the API call)
-
-
-
-heal.addEventListener('click', async () => {
-    await healing(player);
-    if (player.healCount == 0) {
-        heal.disabled = true;
-    }
-    heal.innerHTML = `Heal x${player.healCount}`;
-    clearTimeout(cpuBrain);
-    setTimeout(cpuBrain, 4000);
-});
-physical.addEventListener('click', async () => {
-    await phAttack(player, enemy);
-    clearTimeout(cpuBrain);
-    setTimeout(cpuBrain, 4000);
-});
-special.addEventListener('click', async () => {
-    await spAttack(player, enemy);
-    if (player.specialCount == 0) {
-        special.disabled = true;
-    }
-    special.innerHTML = `${player.special} x${player.specialCount}`;
-    clearTimeout(cpuBrain);
-    setTimeout(cpuBrain, 4000);
-});
-defend.addEventListener('click', async () => {
-    await defending(player);
-    clearTimeout(cpuBrain);
-    setTimeout(cpuBrain, 4000);
-});
-
-hideImg = () => {
-    animationImg.classList.remove("visible");
-    animationImg.classList.add("hidden");
-    gameText.classList.remove("visible");
-    gameText.classList.add("hidden");
-    isAttacking = false;
-    gameEnd();
-}
-
 loadAnimation = (response) => {
+    console.log("inside loadAnimation");
     // set the image src to empty and show image
     clearTimeout(hideImg);
     animationImg.classList.remove("hidden");
@@ -221,84 +230,108 @@ loadAnimation = (response) => {
     // load animation from axios response into img tag and then hide the image.
     let options = response.data.results;
     let i = Math.floor(Math.random() * options.length);
-    // loopedmp4
-    let duration = options[i].media[0].mp4.duration;
+    // loopedmp4?
+    let duration = options[i].media[0].mp4.duration * 1000;
     let animation = options[i].media[0].gif.url;
     animationImg.src = animation;
 
-    let minDuration = 2.5;
-    let maxDuration = 4;
-    if (duration > maxDuration) {
-        duration = maxDuration;
+    let minDuration = 2500;
+    if (duration > MAX_ANIMATION_DURATION_MS) {
+        duration = MAX_ANIMATION_DURATION_MS;
     }
     if (duration < minDuration) {
         duration = minDuration;
     }
     console.log(duration);
-    setTimeout(hideImg, duration * 1000);
+    clearTimeout(hideImg);
+    setTimeout(hideImg, MAX_ANIMATION_DURATION_MS - 500);
 };
 
+hideImg = () => {
+    console.log("inside hide img");
+    animationImg.classList.remove("visible");
+    animationImg.classList.add("hidden");
+    gameText.classList.remove("visible");
+    gameText.classList.add("hidden");
+    isAttacking = false;
+    gameEnd();
+}
 
 
-
-
-
-
+//loadAnimation(searchTerm) (it's the API call)
 cpuBrain = () => {
+    console.log("inside CPU brain");
     // random > number > needs to select of method or method name
     if (enemy.health <= 0) {
         return;
     }
-    let random = Math.ceil(Math.random() * 4)
-    if (random == 1) {
-        phAttack(enemy, player);
+    if (enemy.health <= 35 && enemy.healCount > 0) {
+        healing(enemy);
+
     }
-    if (random == 2) {
-        if (enemy.specialCount <= 0) {
-            cpuBrain();
-        } else {
-            spAttack(enemy, player);
+    else {
+        let random = Math.ceil(Math.random() * 4);
+
+        if (random == 1) {
+            phAttack(enemy, player);
+        }
+        else if (random == 2) {
+            if (enemy.specialCount <= 0) {
+                return cpuBrain();
+            } else {
+                spAttack(enemy, player);
+            }
+        }
+        else if (random == 3) {
+            defending(enemy);
+        }
+        else if (random == 4) {
+            if (enemy.healCount <= 0) {
+                return cpuBrain();
+            } else {
+                healing(enemy);
+            }
         }
     }
-    if (random == 3) {
-        defending(enemy);
-    }
-    if (random == 4) {
-        if (enemy.healCount <= 0) {
-            cpuBrain();
-        } else {
-            healing(enemy);
-        }
-    }
+    clearTimeout(enableAllButtons);
+    setTimeout(enableAllButtons, MAX_ANIMATION_DURATION_MS);
 }
 
 //hasGameEnded()
 gameEnd = () => {
+    console.log("inside game end");
     if (player.health <= 0 || enemy.health <= 0) {
         if (player.health <= 0) {
             if (confirm("Oh no , you died , rematch?")) {
-                window.location.href = "/TripleF/characterSelect.html"
+                window.location.href = "/index.html"
             } else {
                 // disable buttons
-                heal.disabled = true;
-                physical.disabled = true;
-                special.disabled = true;
-                defend.disabled = true;
+                disableAllButtons();
             }
         }
         else {
             clearTimeout(cpuBrain);
             if (confirm(`Congrats!! you beat ${enemy.name} , rematch?`)) {
-                window.location.href = "/TripleF/characterSelect.html"
+                window.location.href = "/index.html"
             } else {
                 // disable buttons
-                heal.disabled = true;
-                physical.disabled = true;
-                special.disabled = true;
-                defend.disabled = true;
+                disableAllButtons();
             }
         }
     }
 }
 
 
+disableAllButtons = () => {
+    heal.disabled = true;
+    physical.disabled = true;
+    special.disabled = true;
+    defend.disabled = true;
+}
+
+enableAllButtons = () => {
+    heal.disabled = player.healCount <= 0;
+    physical.disabled = false;
+    special.disabled = player.specialCount <= 0;
+    defend.disabled = false;
+}
