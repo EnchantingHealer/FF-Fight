@@ -10,8 +10,13 @@ const characters = {
         healCount: 3,
         specialCount:4,
         defenceMultiplier: 1,
+        attackAnimation:"aerith/aerithAttack.png",
+        healAnimation:"aerith/aerithHeal.png",
+        specialAnimation:"aerith/aerithLimit.png",
+        winAnimation:"aerith/aerithWin.png",
         elements:{
-            health: undefined
+            health: undefined,
+            sprite:undefined
         } 
     },
     cloud: {
@@ -25,8 +30,13 @@ const characters = {
         healCount: 2,
         specialCount:4,
         defenceMultiplier: 1,
+        attackAnimation:"cloud/cloudAttack.png",
+        healAnimation:"cloud/cloudHeal.png",
+        specialAnimation:"cloud/cloudLimit.png",
+        winAnimation:"cloud/cloudWin.png",
         elements:{
-            health: undefined
+            health: undefined,
+            sprite:undefined
         }
     },
     tifa: {
@@ -40,8 +50,13 @@ const characters = {
         healCount: 2,
         specialCount:4,
         defenceMultiplier: 1,
+        attackAnimation:"tifa/tifaAttack.png",
+        healAnimation:"tifa/tifaHeal.png",
+        specialAnimation:"tifa/tifaLimit.png",
+        winAnimation:"tifa/tifaWin.png",
         elements:{
-           health: undefined
+           health: undefined,
+           sprite:undefined
         }
     },
     red: {
@@ -55,11 +70,16 @@ const characters = {
         healCount: 2,
         specialCount:4,
         defenceMultiplier: 1,
+        attackAnimation:"red/redAttack.png",
+        healAnimation:"red/redHeal.png",
+        specialAnimation:"red/redLimit.png",
+        winAnimation:"red/redWin.png",
         elements:{
-            health: undefined
+            health: undefined,
+            sprite:undefined
         }
     }
 }
 
-//You are lagging Soooooo bad lol , I literally can't hear you
+
 
