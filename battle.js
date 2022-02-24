@@ -59,8 +59,8 @@ selectPlayer = () => {
     } else if (url.includes(characters.cloud.query)) {
         player = JSON.parse(JSON.stringify(characters.cloud));
     } else {
-        // something broke, select my favorite
-        player = JSON.parse(JSON.stringify(characters.aerith));
+        // something broke, select default
+        player = JSON.parse(JSON.stringify(characters.red));
     }
 }
 
@@ -71,10 +71,14 @@ selectRandomEnemy = () => {
 }
 
 renderCharacter = (character, healthView, nameView, spriteView) => {
+    // give character their own UI elements so we can change them later
+    character.elements.sprite = spriteView;
     character.elements.health = healthView;
+    // load character data into views
     healthView.innerHTML = character.health;
     nameView.innerHTML = character.name;
     spriteView.src = character.sprite;
+
 }
 
 renderPlayerControls = (character) => {
@@ -83,11 +87,23 @@ renderPlayerControls = (character) => {
     special.innerHTML = `${character.special} x${character.specialCount}`;
 }
 
+disableAllButtons = () => {
+    heal.disabled = true;
+    physical.disabled = true;
+    special.disabled = true;
+    defend.disabled = true;
+}
+
+enableAllButtons = () => {
+    heal.disabled = player.healCount <= 0;
+    physical.disabled = false;
+    special.disabled = player.specialCount <= 0;
+    defend.disabled = false;
+}
+
 heal.addEventListener('click', async () => {
     disableAllButtons();
-    console.log("before player heal");
     await healing(player);
-    console.log("after player heal");
     if (player.healCount == 0) {
         heal.disabled = true;
     }
@@ -98,17 +114,13 @@ heal.addEventListener('click', async () => {
 physical.addEventListener('click', async () => {
 
     disableAllButtons();
-    console.log("before player physical");
     await phAttack(player, enemy);
-    console.log("after player physical");
     clearTimeout(cpuBrain);
     setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
 });
 special.addEventListener('click', async () => {
     disableAllButtons();
-    console.log("before player special");
     await spAttack(player, enemy);
-    console.log("after player special");
     if (player.specialCount == 0) {
         special.disabled = true;
     }
@@ -118,9 +130,7 @@ special.addEventListener('click', async () => {
 });
 defend.addEventListener('click', async () => {
     disableAllButtons();
-    console.log("before player def");
     await defending(player);
-    console.log("after player def");
     clearTimeout(cpuBrain);
     setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
 });
@@ -134,6 +144,9 @@ phAttack = async (character, opponent) => {
         // reset character defence because this is a new turn for the character
         character.defenceMultiplier = 1; // This belongs to character
 
+        // change character sprite to do attack Animation
+        character.elements.sprite.src = character.attackAnimation;
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS);
         // deal damage game logic
         let damage = Math.ceil(10 * opponent.defenceMultiplier);
         opponent.health = opponent.health - damage;
@@ -147,6 +160,8 @@ phAttack = async (character, opponent) => {
         const response = await axios.get(`https://g.tenor.com/v1/search?q=${character.physical}&key=J46MWLRVZYC3&limit=30`);
         console.log("after phattack axios call for ", character);
         loadAnimation(response);
+
+
     }
 };
 
@@ -160,6 +175,9 @@ spAttack = async (character, opponent) => {
         }
         character.defenceMultiplier = 1;
         isAttacking = true;
+
+        character.elements.sprite.src = character.specialAnimation;
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS);
 
         let damage = Math.ceil((15 + Math.floor(Math.random() * 21)) * opponent.defenceMultiplier);
         opponent.health = opponent.health - damage;
@@ -189,6 +207,9 @@ healing = async (character) => {
         character.defenceMultiplier = 1;
 
         //heal to full HP, core action of method
+        character.elements.sprite.src = character.healAnimation;
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS);
+
         character.health = character.ogHealth;
         gameText.innerHTML = `${character.name} heals to full health!`;
         character.elements.health.innerHTML = character.health;
@@ -257,6 +278,15 @@ hideImg = () => {
     gameEnd();
 }
 
+spriteIdle = (character) => {
+    character.elements.sprite.src = character.sprite;
+}
+spriteWin = (character) =>{
+    character.elements.sprite.src = character.winAnimation;
+}
+spriteLose= (character) =>{
+    character.elements.sprite.src = character.loseAnimation;
+}
 
 //loadAnimation(searchTerm) (it's the API call)
 cpuBrain = () => {
@@ -299,9 +329,10 @@ cpuBrain = () => {
 
 //hasGameEnded()
 gameEnd = () => {
-    console.log("inside game end");
     if (player.health <= 0 || enemy.health <= 0) {
         if (player.health <= 0) {
+            spriteLose(player);
+            spriteWin(enemy);
             if (confirm("Oh no , you died , rematch?")) {
                 window.location.href = "/index.html"
             } else {
@@ -311,6 +342,8 @@ gameEnd = () => {
         }
         else {
             clearTimeout(cpuBrain);
+            spriteWin(player);
+            spriteLose(enemy);
             if (confirm(`Congrats!! you beat ${enemy.name} , rematch?`)) {
                 window.location.href = "/index.html"
             } else {
@@ -322,16 +355,3 @@ gameEnd = () => {
 }
 
 
-disableAllButtons = () => {
-    heal.disabled = true;
-    physical.disabled = true;
-    special.disabled = true;
-    defend.disabled = true;
-}
-
-enableAllButtons = () => {
-    heal.disabled = player.healCount <= 0;
-    physical.disabled = false;
-    special.disabled = player.specialCount <= 0;
-    defend.disabled = false;
-}
