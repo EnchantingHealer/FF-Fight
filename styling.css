@@ -177,6 +177,13 @@ a:link {
 p {
     margin: 4px;
 }
+#modal{
+    position: fixed;
+    top: 45vh;
+    left:30vw;
+    width: 40vw;
+    height:10vh;
+}
 
 /* media query start */
 @media screen and (max-width: 575px) {

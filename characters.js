@@ -7,6 +7,8 @@ const characters = {
         special: "Geyser",
         health: 80,
         ogHealth: 80,
+        ogHealCount:3,
+        ogSpecialCount:4,
         healCount: 3,
         specialCount: 4,
         defenceMultiplier: 1,
@@ -17,7 +19,8 @@ const characters = {
         loseAnimation:"aerith/aerithDead.png",
         elements: {
             health: undefined,
-            sprite: undefined
+            sprite: undefined,
+            name:undefined
         }
     },
     cloud: {
@@ -27,18 +30,21 @@ const characters = {
         physical: "Sword slash",
         special: "Explosion",
         ogHealth: 100,
+        ogHealCount:2,
+        ogSpecialCount:4,
         health: 100,
         healCount: 2,
         specialCount: 4,
         defenceMultiplier: 1,
-        attackAnimation: "cloud/cloudPhysical.png",
+        attackAnimation: "cloud/cloudPhysical.gif",
         healAnimation: "cloud/cloudHeal.png",
         specialAnimation: "cloud/cloudSpecial.png",
         winAnimation: "cloud/cloudWin.png",
         loseAnimation:"cloud/cloudDead.png",
         elements: {
             health: undefined,
-            sprite: undefined
+            sprite: undefined,
+            name:undefined
         }
     },
     tifa: {
@@ -48,6 +54,8 @@ const characters = {
         physical: "Combo",
         special: "Supernova",
         ogHealth: 100,
+        ogHealCount:2,
+        ogSpecialCount:4,
         health: 100,
         healCount: 2,
         specialCount: 4,
@@ -59,7 +67,8 @@ const characters = {
         loseAnimation:"tifa/tifaDead.png",
         elements: {
             health: undefined,
-            sprite: undefined
+            sprite: undefined,
+            name:undefined
         }
     },
     red: {
@@ -70,6 +79,8 @@ const characters = {
         special: "Fireball",
         health: 100,
         ogHealth: 100,
+        ogHealCount:2,
+        ogSpecialCount:4,
         healCount: 2,
         specialCount: 4,
         defenceMultiplier: 1,
@@ -80,7 +91,8 @@ const characters = {
         loseAnimation:"red/redDead.png",
         elements: {
             health: undefined,
-            sprite: undefined
+            sprite: undefined,
+            name:undefined
         }
     }
 }

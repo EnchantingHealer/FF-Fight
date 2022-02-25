@@ -11,6 +11,7 @@
 //make enemy animation (wait for your turn?)
 
 //onload()
+
 const url = window.location.search;
 const animationImg = document.getElementById("animation");
 // buttons
@@ -18,8 +19,14 @@ const physical = document.getElementById("physicalAttack");
 const special = document.getElementById("specialAttack");
 const defend = document.getElementById("defend");
 const heal = document.getElementById("heal");
+const returnButton = document.getElementById("returnButton");
+const refreshButton = document.getElementById("refreshButton");
+const popUp = document.getElementById("modal");
 
+
+const popText = document.getElementById("modalText");
 const gameText = document.getElementById("game-text");
+
 
 let player = undefined;
 const playerSprite = document.getElementById("spriteOne");
@@ -74,6 +81,7 @@ renderCharacter = (character, healthView, nameView, spriteView) => {
     // give character their own UI elements so we can change them later
     character.elements.sprite = spriteView;
     character.elements.health = healthView;
+    character.elements.name = nameView;
     // load character data into views
     healthView.innerHTML = character.health;
     nameView.innerHTML = character.name;
@@ -112,7 +120,6 @@ heal.addEventListener('click', async () => {
     setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
 });
 physical.addEventListener('click', async () => {
-
     disableAllButtons();
     await phAttack(player, enemy);
     clearTimeout(cpuBrain);
@@ -135,6 +142,42 @@ defend.addEventListener('click', async () => {
     setTimeout(cpuBrain, MAX_ANIMATION_DURATION_MS);
 });
 
+
+returnButton.addEventListener('click', () => { 
+    window.location.href = "/index.html"; 
+});
+refreshButton.addEventListener('click', () => {
+    fullyRestore(player);
+    fullyRestore(enemy);
+    popUp.classList.add("hidden");
+    enableAllButtons();
+});
+
+// Cheat codes
+let cheatString = "";
+const cheatBuffer = 50;
+const instaKillCheat = "ArrowUpArrowDownArrowLeftArrowRight";
+document.addEventListener('keyup', (e)=>{
+    if(cheatString.length > cheatBuffer){
+        cheatString = cheatString.substring(cheatString.length-cheatBuffer,cheatString.length);
+    }
+    cheatString = cheatString+e.key;
+
+    // string cheats
+    if (cheatString.endsWith(instaKillCheat)){
+        enemy.health=0;
+        phAttack(player,enemy);
+    }
+
+    // simple cheats
+    if(e.key == "Q"){
+        enemy.health=0;
+        phAttack(player,enemy);
+    }
+    // Have a global string/array, that we cut off the first keys and then check if the string ends with cheat
+});
+
+
 //phAttack(character) (deals flat damage)
 phAttack = async (character, opponent) => {
     console.log("inside Phattack for ", character);
@@ -146,7 +189,7 @@ phAttack = async (character, opponent) => {
 
         // change character sprite to do attack Animation
         character.elements.sprite.src = character.attackAnimation;
-        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS);
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS-1000);
         // deal damage game logic
         let damage = Math.ceil(10 * opponent.defenceMultiplier);
         opponent.health = opponent.health - damage;
@@ -177,7 +220,7 @@ spAttack = async (character, opponent) => {
         isAttacking = true;
 
         character.elements.sprite.src = character.specialAnimation;
-        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS);
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS-1000);
 
         let damage = Math.ceil((15 + Math.floor(Math.random() * 21)) * opponent.defenceMultiplier);
         opponent.health = opponent.health - damage;
@@ -208,7 +251,7 @@ healing = async (character) => {
 
         //heal to full HP, core action of method
         character.elements.sprite.src = character.healAnimation;
-        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS);
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS-1000);
 
         character.health = character.ogHealth;
         gameText.innerHTML = `${character.name} heals to full health!`;
@@ -245,9 +288,9 @@ loadAnimation = (response) => {
     // set the image src to empty and show image
     clearTimeout(hideImg);
     animationImg.classList.remove("hidden");
-    animationImg.classList.add("visible");
+    // animationImg.classList.add("visible");
     gameText.classList.remove("hidden");
-    gameText.classList.add("visible");
+    // gameText.classList.add("visible");
     // load animation from axios response into img tag and then hide the image.
     let options = response.data.results;
     let i = Math.floor(Math.random() * options.length);
@@ -270,9 +313,9 @@ loadAnimation = (response) => {
 
 hideImg = () => {
     console.log("inside hide img");
-    animationImg.classList.remove("visible");
+    // animationImg.classList.remove("visible");
     animationImg.classList.add("hidden");
-    gameText.classList.remove("visible");
+    // gameText.classList.remove("visible");
     gameText.classList.add("hidden");
     isAttacking = false;
     gameEnd();
@@ -281,10 +324,10 @@ hideImg = () => {
 spriteIdle = (character) => {
     character.elements.sprite.src = character.sprite;
 }
-spriteWin = (character) =>{
+spriteWin = (character) => {
     character.elements.sprite.src = character.winAnimation;
 }
-spriteLose= (character) =>{
+spriteLose = (character) => {
     character.elements.sprite.src = character.loseAnimation;
 }
 
@@ -326,30 +369,31 @@ cpuBrain = () => {
     clearTimeout(enableAllButtons);
     setTimeout(enableAllButtons, MAX_ANIMATION_DURATION_MS);
 }
-
+fullyRestore = (character) => {
+    character.health = character.ogHealth;
+    character.specialCount = character.ogSpecialCount;
+    character.healCount = character.ogHealCount;
+    renderCharacter(character, character.elements.health, character.elements.name, character.elements.sprite);
+}
 //hasGameEnded()
 gameEnd = () => {
     if (player.health <= 0 || enemy.health <= 0) {
+
+        popUp.classList.remove("hidden");
+
         if (player.health <= 0) {
+            clearTimeout(cpuBrain);
             spriteLose(player);
             spriteWin(enemy);
-            if (confirm("Oh no , you died , rematch?")) {
-                window.location.href = "/index.html"
-            } else {
-                // disable buttons
-                disableAllButtons();
-            }
+            popText.innerHTML="Oh no , you died!";
         }
+
         else {
             clearTimeout(cpuBrain);
             spriteWin(player);
             spriteLose(enemy);
-            if (confirm(`Congrats!! you beat ${enemy.name} , rematch?`)) {
-                window.location.href = "/index.html"
-            } else {
-                // disable buttons
-                disableAllButtons();
-            }
+            popText.innerHTML=`Congrats!! you beat ${enemy.name} `;
+
         }
     }
 }
