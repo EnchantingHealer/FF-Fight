@@ -42,6 +42,11 @@ const enemyName = document.getElementById("nameTwo");
 let isAttacking = false;
 const MAX_ANIMATION_DURATION_MS = 4000;
 
+
+const makeCopy = (o) => {
+    return JSON.parse(JSON.stringify(o));
+}
+
 onload = () => {
     // select player
     selectPlayer();
@@ -58,23 +63,23 @@ onload = () => {
 
 selectPlayer = () => {
     if (url.includes(characters.tifa.query)) {
-        player = JSON.parse(JSON.stringify(characters.tifa));
+        player = makeCopy(characters.tifa);
     } else if (url.includes(characters.aerith.query)) {
-        player = JSON.parse(JSON.stringify(characters.aerith));
+        player = makeCopy(characters.aerith);
     } else if (url.includes(characters.red.query)) {
-        player = JSON.parse(JSON.stringify(characters.red));
+        player = makeCopy(characters.red);
     } else if (url.includes(characters.cloud.query)) {
-        player = JSON.parse(JSON.stringify(characters.cloud));
+        player = makeCopy(characters.cloud);
     } else {
         // something broke, select default
-        player = JSON.parse(JSON.stringify(characters.red));
+        player = makeCopy(characters.red);
     }
 }
 
 selectRandomEnemy = () => {
     let keys = Object.keys(characters);
     let i = Math.floor(Math.random() * keys.length);
-    enemy = JSON.parse(JSON.stringify(characters[keys[i]]));
+    enemy = makeCopy(characters[keys[i]]);
 }
 
 renderCharacter = (character, healthView, nameView, spriteView) => {
@@ -143,13 +148,14 @@ defend.addEventListener('click', async () => {
 });
 
 
-returnButton.addEventListener('click', () => { 
-    window.location.href = "/index.html"; 
+returnButton.addEventListener('click', () => {
+    window.location.href = "/index.html";
 });
 refreshButton.addEventListener('click', () => {
     fullyRestore(player);
     fullyRestore(enemy);
     popUp.classList.add("hidden");
+    renderPlayerControls(player);
     enableAllButtons();
 });
 
@@ -157,39 +163,50 @@ refreshButton.addEventListener('click', () => {
 let cheatString = "";
 const cheatBuffer = 50;
 const instaKillCheat = "ArrowUpArrowDownArrowLeftArrowRight";
-document.addEventListener('keyup', (e)=>{
-    if(cheatString.length > cheatBuffer){
-        cheatString = cheatString.substring(cheatString.length-cheatBuffer,cheatString.length);
+const tifaCheat = "tifapls";
+const thePower = "ihavethepower";
+document.addEventListener('keyup', (e) => {
+    if (cheatString.length > cheatBuffer) {
+        cheatString = cheatString.substring(cheatString.length - cheatBuffer, cheatString.length);
     }
-    cheatString = cheatString+e.key;
+    cheatString = cheatString + e.key;
 
     // string cheats
-    if (cheatString.endsWith(instaKillCheat)){
-        enemy.health=0;
-        phAttack(player,enemy);
+    if (cheatString.endsWith(instaKillCheat)) {
+        enemy.health = 0;
+        phAttack(player, enemy);
+    }
+    else if (cheatString.endsWith(tifaCheat)) {
+        enemy = makeCopy(characters.tifa);
+        renderCharacter(enemy, enemyHealth, enemyName, enemySprite);
+    }
+    else if (cheatString.endsWith(thePower)) {
+        player.specialCount = 100;
+        enemy.ogDefenceMultiplier = 4;
+        enemy.defenceMultiplier = 4;
+        renderPlayerControls(player);
+    }
+    // simple cheats
+    if (e.key == "Q") {
+        enemy.health = 0;
+        phAttack(player, enemy);
     }
 
-    // simple cheats
-    if(e.key == "Q"){
-        enemy.health=0;
-        phAttack(player,enemy);
-    }
     // Have a global string/array, that we cut off the first keys and then check if the string ends with cheat
 });
 
 
 //phAttack(character) (deals flat damage)
 phAttack = async (character, opponent) => {
-    console.log("inside Phattack for ", character);
     if (!isAttacking) {
         isAttacking = true;
 
         // reset character defence because this is a new turn for the character
-        character.defenceMultiplier = 1; // This belongs to character
+        character.defenceMultiplier = character.ogDefenceMultiplier; // This belongs to character
 
         // change character sprite to do attack Animation
         character.elements.sprite.src = character.attackAnimation;
-        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS-1000);
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS - 1000);
         // deal damage game logic
         let damage = Math.ceil(10 * opponent.defenceMultiplier);
         opponent.health = opponent.health - damage;
@@ -199,9 +216,9 @@ phAttack = async (character, opponent) => {
         opponent.elements.health.innerHTML = opponent.health;
 
         // get animation
-        console.log("before phattack axios call for ", character);
+
         const response = await axios.get(`https://g.tenor.com/v1/search?q=${character.physical}&key=J46MWLRVZYC3&limit=30`);
-        console.log("after phattack axios call for ", character);
+
         loadAnimation(response);
 
 
@@ -211,24 +228,24 @@ phAttack = async (character, opponent) => {
 
 //spAttack(character) (high number but usable once or twice)
 spAttack = async (character, opponent) => {
-    console.log("inside spAttack for ", character);
+
     if (!isAttacking) {
         if (character.specialCount == 0) {
             return;
         }
-        character.defenceMultiplier = 1;
+        character.defenceMultiplier = character.ogDefenceMultiplier;
         isAttacking = true;
 
         character.elements.sprite.src = character.specialAnimation;
-        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS-1000);
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS - 1000);
 
         let damage = Math.ceil((15 + Math.floor(Math.random() * 21)) * opponent.defenceMultiplier);
         opponent.health = opponent.health - damage;
         gameText.innerHTML = `${character.name} uses ${character.special}, deals ${damage} damage!`;
         opponent.elements.health.innerHTML = opponent.health;
-        console.log("before spatk axios call for ", character);
+
         const response = await axios.get(`https://g.tenor.com/v1/search?q=${special.innerHTML}&key=J46MWLRVZYC3&limit=30`);
-        console.log("after spatk axios call for ", character);
+
         loadAnimation(response);
         // decrement character heal count
         character.specialCount = character.specialCount - 1;
@@ -238,7 +255,7 @@ spAttack = async (character, opponent) => {
 };
 //heal(character)
 healing = async (character) => {
-    console.log("inside healing for ", character);
+
     // don't spam attacks, only attack if one is not in progress
     if (!isAttacking) {
         if (character.healCount == 0) {
@@ -247,20 +264,18 @@ healing = async (character) => {
         // block future attacks
         isAttacking = true;
         // reset defence multiplier for attacking user, their turn was used for something other than defence
-        character.defenceMultiplier = 1;
+        character.defenceMultiplier = character.ogDefenceMultiplier;
 
         //heal to full HP, core action of method
         character.elements.sprite.src = character.healAnimation;
-        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS-1000);
+        setTimeout(spriteIdle.bind(null, character), MAX_ANIMATION_DURATION_MS - 1000);
 
         character.health = character.ogHealth;
         gameText.innerHTML = `${character.name} heals to full health!`;
         character.elements.health.innerHTML = character.health;
 
         // Load animation
-        console.log("before healing axios call for ", character);
         const response = await axios.get(`https://g.tenor.com/v1/search?q=heal&key=J46MWLRVZYC3&limit=30`);
-        console.log("after healing axios call for ", character);
         loadAnimation(response);
 
         // decrement character heal count
@@ -269,22 +284,21 @@ healing = async (character) => {
 };
 //defend(character)
 defending = async (character) => {
-    console.log("inside def for ", character);
+
     //recieve 0.5x damage
     if (!isAttacking) {
         isAttacking = true;
 
-        character.defenceMultiplier = 0.5;
+        character.defenceMultiplier = character.ogDefenceMultiplier * 0.5;
         gameText.innerHTML = `${character.name} braces themselves for an attack , receives half the damage.`
-        console.log("before def axios call for ", character);
+
         const response = await axios.get(`https://g.tenor.com/v1/search?q=defend&key=J46MWLRVZYC3&limit=30`);
-        console.log("after def axios call for ", character);
+
         loadAnimation(response);
     }
 };
 
 loadAnimation = (response) => {
-    console.log("inside loadAnimation");
     // set the image src to empty and show image
     clearTimeout(hideImg);
     animationImg.classList.remove("hidden");
@@ -306,13 +320,11 @@ loadAnimation = (response) => {
     if (duration < minDuration) {
         duration = minDuration;
     }
-    console.log(duration);
     clearTimeout(hideImg);
     setTimeout(hideImg, MAX_ANIMATION_DURATION_MS - 500);
 };
 
 hideImg = () => {
-    console.log("inside hide img");
     // animationImg.classList.remove("visible");
     animationImg.classList.add("hidden");
     // gameText.classList.remove("visible");
@@ -333,7 +345,6 @@ spriteLose = (character) => {
 
 //loadAnimation(searchTerm) (it's the API call)
 cpuBrain = () => {
-    console.log("inside CPU brain");
     // random > number > needs to select of method or method name
     if (enemy.health <= 0) {
         return;
@@ -370,9 +381,11 @@ cpuBrain = () => {
     setTimeout(enableAllButtons, MAX_ANIMATION_DURATION_MS);
 }
 fullyRestore = (character) => {
+    character.ogDefenceMultiplier = 1; // reset cheats
     character.health = character.ogHealth;
     character.specialCount = character.ogSpecialCount;
     character.healCount = character.ogHealCount;
+    character.defenceMultiplier = character.ogDefenceMultiplier;
     renderCharacter(character, character.elements.health, character.elements.name, character.elements.sprite);
 }
 //hasGameEnded()
@@ -385,14 +398,14 @@ gameEnd = () => {
             clearTimeout(cpuBrain);
             spriteLose(player);
             spriteWin(enemy);
-            popText.innerHTML="Oh no , you died!";
+            popText.innerHTML = "Oh no , you died!";
         }
 
         else {
             clearTimeout(cpuBrain);
             spriteWin(player);
             spriteLose(enemy);
-            popText.innerHTML=`Congrats!! you beat ${enemy.name} `;
+            popText.innerHTML = `Congrats!! you beat ${enemy.name} `;
 
         }
     }

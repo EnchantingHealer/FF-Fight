@@ -3,6 +3,10 @@ html {
     width: 100vw;
 }
 
+.hidden {
+    display: none !important;
+}
+
 #selectScreen {
     display: flex;
     background-image: linear-gradient(to bottom, rgb(79, 79, 177), rgb(2, 2, 107));
@@ -78,6 +82,7 @@ a:link {
     text-decoration: none;
 }
 
+
 #abilities {
     display: flex;
     flex-direction: row;
@@ -93,9 +98,12 @@ a:link {
 }
 
 #abilities button {
+    font-size: 20px;
     flex-grow: 1;
     height: 18vh;
     width: 40vw;
+    border-radius: 30px;
+    background-color: yellow;
 }
 
 #battle {
@@ -178,11 +186,33 @@ p {
     margin: 4px;
 }
 #modal{
+    display: flex;
+    flex-direction: column;
     position: fixed;
-    top: 45vh;
+    top: 40vh;
     left:30vw;
     width: 40vw;
-    height:10vh;
+    height:20vh;
+    margin:0;
+    background-image: linear-gradient(to bottom, rgb(79, 79, 177), rgb(2, 2, 107));
+    border-style: solid;
+    border-radius: 20px;
+    border-width: 5px;
+    flex-wrap:wrap;
+    align-items: center;
+
+}
+
+#modalText{
+    color:white;
+    font-size:30px;
+}
+.exitMenu{
+    height:5vh;
+    width:15vw;
+    border-radius: 20px;
+    margin-top: 4vh;
+    background-color:aqua;
 }
 
 /* media query start */
@@ -268,11 +298,7 @@ p {
     }
 
     .hidden {
-        display: none;
-    }
-
-    .visible {
-        display: block;
+        display: none !important;
     }
 
     .text {
